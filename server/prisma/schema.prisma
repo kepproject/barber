@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id            Int      @id @default(autoincrement())
+  title         String
+  slug          String   @unique
+  categories    String[]
+  shortDesc     String
+  fullDesc      String
+  includes      String[]
+  price         Int
+  duration      Int
+  badge         String?
+  image         String?
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  appointments  Appointment[]
+  barbers BarberService[]
+}
+
+model Barber {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  position    String
+  description String
+  experience  String?
+  image       String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  services     BarberService[]
+  appointments Appointment[]
+  schedules BarberSchedule[]
+}
+
+model BarberService {
+  id        Int @id @default(autoincrement())
+  barberId Int
+  serviceId Int
+
+  barber  Barber  @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, serviceId])
+}
+
+model Appointment {
+  id         Int      @id @default(autoincrement())
+  clientName String
+  phone      String
+  email      String?
+  date       DateTime
+  startTime  String
+  endTime    String
+  status     String   @default("NEW")
+  source     String   @default("ONLINE")
+  comment    String?
+
+  serviceId  Int
+  service    Service  @relation(fields: [serviceId], references: [id])
+
+  barberId   Int
+  barber     Barber   @relation(fields: [barberId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  subject   String
+  message   String
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BarberSchedule {
+  id        Int      @id @default(autoincrement())
+  barberId Int
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  isActive  Boolean @default(true)
+
+  barber Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+   @@unique([barberId, dayOfWeek])
+}
+
+model Subscription {
+  id        Int      @id @default(autoincrement())
+  phone     String   @unique
+  createdAt DateTime @default(now())
+}

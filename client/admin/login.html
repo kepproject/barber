@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>BRO BARBER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-auth-page">
+    <main class="admin-auth">
+        <div class="admin-auth__card">
+            <span class="admin-auth__label">BRO BARBER</span>
+
+            <h1>Вхід в адмінпанель</h1>
+
+            <form id="adminLoginForm">
+                <div class="admin-form-group">
+                    <label for="adminEmail">Email</label>
+                    <input id="adminEmail" name="email" type="email" required>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="adminPassword">Пароль</label>
+                    <input id="adminPassword" name="password" type="password" required>
+                </div>
+
+                <p class="admin-auth__error" id="adminLoginError"></p>
+
+                <button type="submit" class="admin-btn">
+                    Увійти
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script src="assets/js/admin-config.js"></script>
+    <script src="assets/js/login.js"></script>
+</body>
+</html>

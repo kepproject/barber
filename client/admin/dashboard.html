@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>BRO BARBER - Адмінпанель</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a href="../index.html" class="admin-sidebar__logo" style="text-decoration: none;">
+                <span>BRO</span>
+                <strong>BARBER</strong>
+            </a>
+
+            <nav class="admin-nav">
+                <button class="admin-nav__item active" type="button" data-section="dashboard">Дашборд</button>
+                <button class="admin-nav__item" type="button" data-section="appointments">Записи</button>
+                <button class="admin-nav__item" type="button" data-section="contacts">Звернення</button>
+                <button class="admin-nav__item" type="button" data-section="subscriptions">Підписки</button>                
+                <button class="admin-nav__item" type="button" data-section="services">Послуги</button>
+                <button class="admin-nav__item" type="button" data-section="barbers">Барбери</button>             
+            </nav>
+
+            <button class="admin-sidebar__logout" id="adminLogout" type="button">
+                Вийти
+            </button>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div>
+                    <h1 id="adminPageTitle" style="color:#d19f68;">Панель керування</h1>
+                </div>
+
+                <div class="admin-header__user">
+                    <span id="adminUserEmail">admin</span>
+                </div>
+            </header>
+
+            <section class="admin-section active" id="dashboardSection">
+                <div class="admin-stats">
+                    <div class="admin-stat-card">
+                        <span>Нові записи</span>
+                        <strong id="newAppointmentsCount">0</strong>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <span>Підписки</span>
+                        <strong id="subscriptionsCount">0</strong>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <span>Звернення</span>
+                        <strong id="contactMessagesCount">0</strong>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <span>Послуги</span>
+                        <strong id="servicesCount">0</strong>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <span>Барбери</span>
+                        <strong id="barbersCount">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="appointmentsSection" style="margin-top:60px;">
+                <div class="admin-panel">
+                    <div class="admin-panel__header">
+                        <div>
+                            <h2>Записи</h2>
+                            <p>Онлайн-записи та записи, створені адміністратором.</p>
+                        </div>
+
+                        <button class="admin-btn admin-btn--small" type="button" id="addAppointmentBtn">
+                            Додати запис
+                        </button>
+                    </div>
+
+                    <div class="admin-filters">
+                        <div class="admin-filter-field">
+                            <label for="appointmentSearch">Пошук</label>
+                            <input
+                                type="text"
+                                id="appointmentSearch"
+                                placeholder="Ім’я, телефон, послуга або барбер"
+                            >
+                        </div>
+
+                        <div class="admin-filter-field">
+                            <label for="appointmentStatusFilter">Статус</label>
+                            <select id="appointmentStatusFilter">
+                                <option value="all">Усі</option>
+                                <option value="NEW">Нові</option>
+                                <option value="CONFIRMED">Підтверджені</option>
+                                <option value="DONE">Виконані</option>
+                                <option value="CANCELED">Скасовані</option>
+                            </select>
+                        </div>
+
+                        <div class="admin-filter-field">
+                            <label for="appointmentSourceFilter">Джерело</label>
+                            <select id="appointmentSourceFilter">
+                                <option value="all">Усі</option>
+                                <option value="ONLINE">Онлайн</option>
+                                <option value="ADMIN">Адмін</option>
+                            </select>
+                        </div>
+
+                        <div class="admin-filter-field">
+                            <label for="appointmentDateFilter">Дата</label>
+                            <select id="appointmentDateFilter">
+                                <option value="all">Усі</option>
+                                <option value="today">Сьогодні</option>
+                                <option value="future">Майбутні</option>
+                                <option value="past">Минулі</option>
+                            </select>
+                        </div>
+
+                        <div class="admin-filter-field">
+                            <label for="appointmentSort">Сортування</label>
+                            <select id="appointmentSort">
+                                <option value="newest">Спочатку новіші</option>
+                                <option value="oldest">Спочатку старіші</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Час</th>
+                                    <th>Клієнт</th>
+                                    <th>Телефон</th>
+                                    <th>Послуга</th>
+                                    <th>Барбер</th>
+                                    <th>Джерело</th>
+                                    <th>Статус</th>
+                                    <th>Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsTableBody">
+                                <tr>
+                                    <td colspan="9">Завантаження записів...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="contactsSection" style="margin-top:60px;">
+                <div class="admin-panel">
+                    <div class="admin-panel__header">
+                        <div>
+                            <h2>Звернення</h2>
+                            <p>Повідомлення, які клієнти залишили через контактну форму.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-filters">
+                        <div class="admin-filter-field">
+                            <label for="contactSearch">Пошук</label>
+                            <input
+                                type="text"
+                                id="contactSearch"
+                                placeholder="Ім’я, телефон, тема або повідомлення"
+                            >
+                        </div>
+
+                        <div class="admin-filter-field">
+                            <label for="contactStatusFilter">Статус</label>
+                            <select id="contactStatusFilter">
+                                <option value="all">Усі</option>
+                                <option value="NEW">Нові</option>
+                                <option value="PROCESSED">Опрацьовані</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Ім’я</th>
+                                    <th>Телефон</th>
+                                    <th>Тема</th>
+                                    <th>Повідомлення</th>
+                                    <th>Статус</th>
+                                    <th>Дії</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="contactsTableBody">
+                                <tr>
+                                    <td colspan="7">Завантаження звернень...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="subscriptionsSection" style="margin-top:60px;">
+                <div class="admin-panel">
+                    <div class="admin-panel__header">
+                        <div>
+                            <h2>Підписки</h2>
+                            <p>Список номерів телефонів, залишених у формі підписки.</p>
+                        </div>
+
+                        <button class="admin-btn admin-btn--small" type="button" id="exportSubscriptionsCsv">
+                            Експорт CSV
+                        </button>
+                    </div>
+
+                    <div class="admin-filters">
+                        <div class="admin-filter-field">
+                            <label for="subscriptionSearch">Пошук</label>
+                            <input
+                                type="text"
+                                id="subscriptionSearch"
+                                placeholder="Пошук за номером телефону"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Телефон</th>
+                                    <th>Дії</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="subscriptionsTableBody">
+                                <tr>
+                                    <td colspan="3">Завантаження підписок...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="servicesSection" style="margin-top:60px;">
+                <div class="admin-panel">
+                    <div class="admin-panel__header">
+                        <div>
+                            <h2>Послуги</h2>
+                            <p>Керування послугами, цінами, тривалістю та відображенням на сайті.</p>
+                        </div>
+
+                        <button class="admin-btn admin-btn--small" type="button" id="addServiceBtn">
+                            Додати послугу
+                        </button>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Порядок</th>
+                                    <th>Назва</th>
+                                    <th>Категорії</th>
+                                    <th>Ціна</th>
+                                    <th>Тривалість</th>
+                                    <th>Статус</th>
+                                    <th>Дії</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="servicesTableBody">
+                                <tr>
+                                    <td colspan="7">Завантаження послуг...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="barbersSection" style="margin-top:60px;">
+                <div class="admin-panel">
+                    <div class="admin-panel__header">
+                        <div>
+                            <h2>Барбери</h2>
+                            <p>Керування командою, послугами барберів, фото та графіком роботи.</p>
+                        </div>
+
+                        <button class="admin-btn admin-btn--small" type="button" id="addBarberBtn">
+                            Додати барбера
+                        </button>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Порядок</th>
+                                    <th>Фото</th>
+                                    <th>Ім’я</th>
+                                    <th>Посада</th>
+                                    <th>Послуги</th>
+                                    <th>Статус</th>
+                                    <th>Дії</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="barbersTableBody">
+                                <tr>
+                                    <td colspan="7">Завантаження барберів...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div class="admin-modal" id="appointmentModal" aria-hidden="true">
+    <div class="admin-modal__overlay js-admin-modal-close"></div>
+
+    <div class="admin-modal__dialog">
+        <button class="admin-modal__close js-admin-modal-close" type="button">
+            ×
+        </button>
+
+        <div class="admin-modal__content">
+            <div class="admin-modal__header">
+                <span>Запис клієнта</span>
+                <h2>Додати запис</h2>
+            </div>
+
+            <form id="adminAppointmentForm">
+                <div class="admin-form-grid">
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="appointmentService">
+                            Послуга
+                        </label>
+
+                        <select id="appointmentService" name="serviceId" required>
+                            <option value="">Оберіть послугу</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="appointmentBarber">
+                            Барбер
+                        </label>
+
+                        <select id="appointmentBarber" name="barberId" required disabled>
+                            <option value="">Спочатку оберіть послугу</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="appointmentDate">
+                            Дата
+                        </label>
+
+                        <input type="date"
+                               id="appointmentDate"
+                               name="date"
+                               required
+                               disabled>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="appointmentTime">
+                            Час
+                        </label>
+
+                        <select id="appointmentTime" name="startTime" required disabled>
+                            <option value="">Оберіть дату</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="appointmentClientName">
+                            Ім’я клієнта
+                        </label>
+
+                        <input type="text"
+                               id="appointmentClientName"
+                               name="clientName"
+                               required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="appointmentPhone">
+                            Телефон
+                        </label>
+
+                        <input type="tel"
+                               id="appointmentPhone"
+                               name="phone"
+                               required>
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="appointmentComment">
+                            Коментар
+                        </label>
+
+                        <textarea id="appointmentComment"
+                                  name="comment"
+                                  rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="admin-modal__actions">
+                    <button class="admin-btn" type="submit">
+                        Створити запис
+                    </button>
+
+                    <button class="admin-btn admin-btn--secondary js-admin-modal-close"
+                            type="button">
+                        Закрити
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="admin-modal" id="serviceModal" aria-hidden="true">
+    <div class="admin-modal__overlay js-service-modal-close"></div>
+
+    <div class="admin-modal__dialog">
+        <button class="admin-modal__close js-service-modal-close" type="button">×</button>
+
+        <div class="admin-modal__content">
+            <div class="admin-modal__header">
+                <span>Послуга</span>
+                <h2 id="serviceModalTitle">Додати послугу</h2>
+            </div>
+
+            <form id="adminServiceForm">
+                <input type="hidden" id="serviceId" name="id">
+
+                <div class="admin-form-grid">
+                    <div class="admin-form-group">
+                        <label for="serviceTitle">Назва</label>
+                        <input type="text" id="serviceTitle" name="title" required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="serviceSlug">Slug</label>
+                        <input type="text" id="serviceSlug" name="slug" required>
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="serviceCategories">Категорії через кому</label>
+                        <input type="text" id="serviceCategories" name="categories" placeholder="haircut, beard, combo">
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="serviceShortDesc">Короткий опис</label>
+                        <textarea id="serviceShortDesc" name="shortDesc" rows="3" required></textarea>
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="serviceFullDesc">Повний опис</label>
+                        <textarea id="serviceFullDesc" name="fullDesc" rows="4" required></textarea>
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="serviceIncludes">Що входить, кожен пункт з нового рядка</label>
+                        <textarea id="serviceIncludes" name="includes" rows="4"></textarea>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="servicePrice">Ціна, грн</label>
+                        <input type="number" id="servicePrice" name="price" required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="serviceDuration">Тривалість, хв</label>
+                        <input type="number" id="serviceDuration" name="duration" required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="serviceBadge">Бейдж</label>
+                        <input type="text" id="serviceBadge" name="badge" placeholder="Популярно">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="serviceSortOrder">Порядок</label>
+                        <input type="number" id="serviceSortOrder" name="sortOrder" value="0">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="serviceIsActive">Статус</label>
+                        <select id="serviceIsActive" name="isActive">
+                            <option value="true">Активна</option>
+                            <option value="false">Прихована</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-modal__actions">
+                    <button class="admin-btn" type="submit">Зберегти</button>
+
+                    <button class="admin-btn admin-btn--secondary js-service-modal-close" type="button">
+                        Закрити
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="admin-modal" id="barberModal" aria-hidden="true">
+    <div class="admin-modal__overlay js-barber-modal-close"></div>
+
+    <div class="admin-modal__dialog">
+        <button class="admin-modal__close js-barber-modal-close" type="button">×</button>
+
+        <div class="admin-modal__content">
+            <div class="admin-modal__header">
+                <span>Барбер</span>
+                <h2 id="barberModalTitle">Додати барбера</h2>
+            </div>
+
+            <form id="adminBarberForm">
+                <input type="hidden" id="barberId" name="id">
+
+                <div class="admin-form-grid">
+                    <div class="admin-form-group">
+                        <label for="barberName">Ім’я</label>
+                        <input type="text" id="barberName" name="name" required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="barberSlug">Slug</label>
+                        <input type="text" id="barberSlug" name="slug" required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="barberPosition">Посада</label>
+                        <input type="text" id="barberPosition" name="position" required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="barberExperience">Досвід</label>
+                        <input type="text" id="barberExperience" name="experience" placeholder="6 років досвіду">
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="barberImage">Шлях до фото</label>
+                        <input type="text" id="barberImage" name="image" placeholder="assets/img/gallery/team1.png">
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label for="barberDescription">Опис</label>
+                        <textarea id="barberDescription" name="description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="barberSortOrder">Порядок</label>
+                        <input type="number" id="barberSortOrder" name="sortOrder" value="0">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="barberIsActive">Статус</label>
+                        <select id="barberIsActive" name="isActive">
+                            <option value="true">Активний</option>
+                            <option value="false">Прихований</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label>Послуги барбера</label>
+                        <div class="admin-checkbox-list" id="barberServicesList"></div>
+                    </div>
+
+                    <div class="admin-form-group admin-form-group--full">
+                        <label>Графік роботи</label>
+
+                        <div class="admin-schedule-list" id="barberScheduleList">
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="1" checked>
+                                <span>Понеділок</span>
+                                <input type="time" data-start="1" value="10:00">
+                                <input type="time" data-end="1" value="19:00">
+                            </label>
+
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="2" checked>
+                                <span>Вівторок</span>
+                                <input type="time" data-start="2" value="10:00">
+                                <input type="time" data-end="2" value="19:00">
+                            </label>
+
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="3" checked>
+                                <span>Середа</span>
+                                <input type="time" data-start="3" value="10:00">
+                                <input type="time" data-end="3" value="19:00">
+                            </label>
+
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="4" checked>
+                                <span>Четвер</span>
+                                <input type="time" data-start="4" value="10:00">
+                                <input type="time" data-end="4" value="19:00">
+                            </label>
+
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="5" checked>
+                                <span>П’ятниця</span>
+                                <input type="time" data-start="5" value="10:00">
+                                <input type="time" data-end="5" value="19:00">
+                            </label>
+
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="6" checked>
+                                <span>Субота</span>
+                                <input type="time" data-start="6" value="10:00">
+                                <input type="time" data-end="6" value="17:00">
+                            </label>
+
+                            <label class="admin-schedule-row">
+                                <input type="checkbox" data-day="7">
+                                <span>Неділя</span>
+                                <input type="time" data-start="7" value="10:00">
+                                <input type="time" data-end="7" value="17:00">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-modal__actions">
+                    <button class="admin-btn" type="submit">Зберегти</button>
+
+                    <button class="admin-btn admin-btn--secondary js-barber-modal-close" type="button">
+                        Закрити
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <script src="assets/js/admin-config.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
