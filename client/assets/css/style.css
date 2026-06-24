@@ -8049,3 +8049,9 @@ body.bro-modal-open {
     padding: 14px 10px;
     height: 43px;
 }
+
+select.form-control,
+select.form-control option {
+    color: #ffffff;
+    background-color: #1a1a1a;
+}
